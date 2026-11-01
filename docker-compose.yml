@@ -1,0 +1,51 @@
+﻿version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: ml-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mlflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-mlflow}
+    volumes:
+      - ml-postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    container_name: mlflow
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://${POSTGRES_USER:-mlflow}:${POSTGRES_PASSWORD:-changeme}@ml-postgres:5432/${POSTGRES_DB:-mlflow} --default-artifact-root file:///mlflow/artifacts
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow-artifacts:/mlflow/artifacts
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  ml-api:
+    image: ml-api:latest
+    container_name: ml-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_HOST=http://192.168.10.103:11434
+    restart: unless-stopped
+
+  telegram-bot:
+    image: telegram-bot:latest
+    container_name: telegram-bot
+    volumes:
+      - ml-telegram-data:/opt/telegram-bot
+    environment:
+      - OLLAMA_URL=http://192.168.10.103:11434
+      - PROXY_URL=socks5://192.168.10.115:1080
+    restart: unless-stopped
+
+volumes:
+  ml-postgres-data:
+  mlflow-artifacts:
+  ml-telegram-data:

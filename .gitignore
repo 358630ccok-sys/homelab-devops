@@ -1,0 +1,18 @@
+# Secrets
+.env
+*.key
+*.pem
+bpb-credentials.txt
+awg*.conf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
