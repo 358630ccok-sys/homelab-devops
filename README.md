@@ -70,6 +70,19 @@ homelab-devops/
 
 Все секреты (пароли, токены, ключи) вынесены в переменные окружения или `.env` файлы, которые не коммитятся в репозиторий.
 
-## Лицензия
+## CI/CD
 
-MIT
+GitLab CI/CD пайплайн (`.gitlab-ci.yml`) включает:
+- **Lint**: проверка синтаксиса docker-compose
+- **Build**: сборка Docker-образов
+- **Deploy**: ручной деплой стека (кнопка в GitLab UI)
+
+Runner: CT 110 (GitLab Runner на Proxmox)
+
+### Скриншоты
+
+| Grafana Dashboard | Prometheus Targets |
+|---|---|
+| ![Grafana](screenshots/grafana.png) | ![Prometheus](screenshots/prometheus.png) |
+
+> Скриншоты можно добавить в папку `screenshots/`

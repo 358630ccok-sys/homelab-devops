@@ -1,0 +1,40 @@
+stages:
+  - lint
+  - build
+  - deploy
+
+variables:
+  DOCKER_COMPOSE_FILE: docker-compose.yml
+
+lint:compose:
+  stage: lint
+  image: docker/compose:latest
+  script:
+    - docker compose -f $DOCKER_COMPOSE_FILE config
+  tags:
+    - docker
+
+build:images:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker compose -f $DOCKER_COMPOSE_FILE build
+  tags:
+    - docker
+  only:
+    - main
+
+deploy:stack:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker compose -f $DOCKER_COMPOSE_FILE up -d
+  tags:
+    - docker
+  only:
+    - main
+  when: manual
