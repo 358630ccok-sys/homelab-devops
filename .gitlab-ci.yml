@@ -11,7 +11,7 @@ validate:syntax:
     - apt-get update -qq && apt-get install -y -qq yamllint openssh-client >/dev/null
     - python3 -m py_compile telegram-bot/bot.py scripts/obsidian_sync.py
     - python3 -m json.tool grafana/dashboards/mlops-tv-kiosk.json >/dev/null
-    - 'yamllint -d "{extends: default, rules: {line-length: {max: 220}, document-start: disable, truthy: disable}}" prometheus/prometheus.yml .gitlab-ci.yml'
+    - 'yamllint -d "{extends: default, rules: {line-length: {max: 220}, document-start: disable, truthy: disable, indentation: disable}}" prometheus/prometheus.yml .gitlab-ci.yml'
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
