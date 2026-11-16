@@ -1,0 +1,129 @@
+	LANG = "en_US.UTF-8"
+    are supported and installed on your system.
+global:
+  evaluation_interval: 15s
+  scrape_interval: 15s
+rule_files:
+- /etc/prometheus/alert_rules.yml
+scrape_configs:
+- job_name: n8n
+  metrics_path: /metrics
+  static_configs:
+  - targets:
+    - 192.168.10.134:5678
+- job_name: prometheus
+  static_configs:
+  - targets:
+    - localhost:9090
+- job_name: node_exporter
+  static_configs:
+  - targets:
+    - 192.168.10.100:9100
+    - 192.168.10.105:9100
+    - 192.168.10.106:9100
+- job_name: node_exporter_host
+  static_configs:
+  - targets:
+    - 192.168.10.100:9101
+- job_name: amd_gpu
+  static_configs:
+  - targets:
+    - 192.168.10.103:9360
+- job_name: amneziawg_exporter
+  scrape_interval: 30s
+  static_configs:
+  - targets:
+    - 192.168.10.100:9586
+- job_name: amneziawg_peer
+  scrape_interval: 15s
+  static_configs:
+  - targets:
+    - 192.168.10.100:9587
+  # Подписи пиров именами. Экспортер awg-peer-exporter.py имена НЕ читает
+  # (парсит только `awg show` dump, там имён нет) — поэтому подпись делаем
+  # здесь, по публичному ключу. При ротации пиров 2026-10-06 старый shared peer
+  # OjuxW3v1… удалён, теперь у каждого свой ключ и свой /32.
+  # ⚠️ При добавлении нового пользователя дописать правило ЗДЕСЬ и
+  #    добавить ряд в дашборд «AmneziaWG — VPN Peers v2».
+  # 2026-10-07: исправлен ротированный ключ nadyushka (6xV7YGJC… → RvSW/wlAn…),
+  # добавлен sasha-kulikov (10.13.13.4/32).
+  metric_relabel_configs:
+  - source_labels: [public_key]
+    regex: 'nZLjZh8UitdQYoEdf8EefYNJqhXjWejcaxuFZXk7rjA='
+    target_label: peer_name
+    replacement: anton
+  - source_labels: [public_key]
+    regex: 'RvSW/wlAnXsLzPF98YfXHn0mWSdPmYiMwBpu4coswEg='
+    target_label: peer_name
+    replacement: nadyushka
+  - source_labels: [public_key]
+    regex: 'gIzy7Ax56ld8ezRwC3seVvV41BzuygFS58umycUAy3I='
+    target_label: peer_name
+    replacement: sasha-kulikov
+  - source_labels: [public_key]
+    regex: 'gtS6DWVwvLOPcRSxDf3p6LBxlogBOsZwYvEnMLLid2w='
+    target_label: peer_name
+    replacement: vika-kulikova
+  - source_labels: [public_key]
+    regex: 'cPwn4/L1gDRMEuAxXXigQHx29OQeT5A4lmdpIn19/jU='
+    target_label: peer_name
+    replacement: sofya
+  - source_labels: [public_key]
+    regex: Db4aJ\+UqT4yWoyrmRHMSeBZ1MOz/GBHQRhCoyCF3zWA=
+    target_label: peer_name
+    replacement: vps-aeza
+  - source_labels: [public_key]
+    regex: PAqlV56F3jCKhIJLVjJZcrsnNAqRTYXaRF81v1JwU2M=
+    target_label: peer_name
+    replacement: maxim-galdin
+  - source_labels: [public_key]
+    regex: oIBUC6VkhActIyf8FFHVAr0y/t3PaFmyhdnL4abkmmY=
+    target_label: peer_name
+    replacement: ispanets
+  - source_labels: [public_key]
+    regex: fdNkx/z1kgA0sgEVxriCL78dnU9bbF52h0nc4LcPqk8=
+    target_label: peer_name
+    replacement: nadyushka-tablet
+  - source_labels: [public_key]
+    regex: 8Tb8UvtBMSiuXDQwsaWkGvek0Y8mnUS4DBUykzTPZXw=
+    target_label: peer_name
+    replacement: papa
+  - source_labels: [public_key]
+    regex: tD\+QV5AF7BrscE80VtM5xA/XbtlCPZJc9euCXpgItls=
+    target_label: peer_name
+    replacement: misha-brat-nady
+  - source_labels: [public_key]
+    regex: 'NOwBfWfbI8B0mqa5FHqko4g452HbVs7\+LR9AcenjQiU='
+    target_label: peer_name
+    replacement: zhenya-kulikova
+  - source_labels: [public_key]
+    regex: 'BVKuR1rB\+5QT8Irhiq3zuQ4yKQVLW6tFSfdykclVbRo='
+    target_label: peer_name
+    replacement: nestli
+  - source_labels: [public_key]
+    regex: 'rLWov\+lrmHGaa2MJAsffVqCEtmgDuFXbNsyAVT8OBW4='
+    target_label: peer_name
+    replacement: margo-rita
+  - source_labels: [public_key]
+    regex: 'PIArZ9va4UrGni8GV1c6g8M2jmNpSarlSDQUiLf8eQA='
+    target_label: peer_name
+    replacement: sobol
+- job_name: amneziawg_subnet_peer
+  metrics_path: /metrics
+  scrape_interval: 15s
+  static_configs:
+  - targets:
+    - 192.168.10.100:9588
+- job_name: likevps_xray
+  metrics_path: /metrics
+  static_configs:
+  - targets:
+    - 193.124.182.154:9100
+- job_name: nvidia_gpu
+  static_configs:
+  - targets:
+    - 192.168.10.103:9835
+- job_name: ollama_exporter
+  static_configs:
+  - targets:
+    - 192.168.10.103:9114
