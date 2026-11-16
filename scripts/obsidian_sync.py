@@ -1,5 +1,3 @@
-	LANG = "en_US.UTF-8"
-    are supported and installed on your system.
 #!/usr/bin/env python3
 """Sync changed Obsidian notes to Dify dataset."""
 import hashlib, json, os, urllib.request, urllib.error, glob
