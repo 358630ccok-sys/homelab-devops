@@ -8,10 +8,21 @@ default:
 validate:syntax:
   stage: validate
   script:
-    - apt-get update -qq && apt-get install -y -qq yamllint openssh-client >/dev/null
+    - apt-get update -qq && apt-get install -y -qq yamllint openssh-client shellcheck >/dev/null
     - python3 -m py_compile telegram-bot/bot.py scripts/obsidian_sync.py
     - python3 -m json.tool grafana/dashboards/mlops-tv-kiosk.json >/dev/null
-    - 'yamllint -d "{extends: default, rules: {line-length: {max: 220}, document-start: disable, truthy: disable, indentation: disable}}" prometheus/prometheus.yml .gitlab-ci.yml'
+    - |
+      for f in grafana/dashboards/*.json; do
+        [ -f "$f" ] && python3 -m json.tool "$f" >/dev/null
+      done
+    - 'yamllint -d "{extends: default, rules: {line-length: {max: 220}, document-start: disable, truthy: disable, indentation: disable}}" prometheus/prometheus.yml .gitlab-ci.yml docker-compose.yml'
+    - |
+      if [ -d scripts ]; then
+        sh_files=$(find scripts -type f -name "*.sh" 2>/dev/null || true)
+        if [ -n "$sh_files" ]; then
+          shellcheck $sh_files || true
+        fi
+      fi
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
